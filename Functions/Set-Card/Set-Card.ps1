@@ -44,21 +44,38 @@
     process
     {
         try {
+            # Check if the whole card data was passed in, assume attribute is Id
+            if($Card -is "PSCustomObject") {
+                $CardId = $Card.Id
+            } else {
+                $CardId = $Card
+            }
+            
+            # If the Name parameter was filled in then PUT the new value
             if($Name) { 
                 $Hash = @{ value = $Name } | ConvertTo-Json
-                Invoke-RestMethod -Method Put -Uri "https://api.trello.com/1/cards/$($Card.Id)/name/?token=$($Token.Token)&key=$($Token.AccessKey)" -Body $Hash -ContentType "application/json"
+                Invoke-RestMethod -Method Put -Uri "https://api.trello.com/1/cards/$CardId/name/?token=$($Token.Token)&key=$($Token.AccessKey)" -Body $Hash -ContentType "application/json"
             }
+
+            # If the Description parameter was filled in then PUT the new value
             if($Description) { 
                 $Hash = @{ value = $Description } | ConvertTo-Json
-                Invoke-RestMethod -Method Put -Uri "https://api.trello.com/1/cards/$($Card.Id)/desc/?token=$($Token.Token)&key=$($Token.AccessKey)" -Body $Hash -ContentType "application/json"
+                Invoke-RestMethod -Method Put -Uri "https://api.trello.com/1/cards/$CardId/desc/?token=$($Token.Token)&key=$($Token.AccessKey)" -Body $Hash -ContentType "application/json"
             }
-            if($List) { 
-                $Hash = @{ value = $List.Id } | ConvertTo-Json
-                Invoke-RestMethod -Method Put -Uri "https://api.trello.com/1/cards/$($Card.Id)/idList/?token=$($Token.Token)&key=$($Token.AccessKey)" -Body $Hash -ContentType "application/json"
+
+            # Check if the whole list data was passed in, assume attribute is Id, PUT the new value
+            if($List) {
+                if($List -is "PSCustomObject") {
+                    $Value = $List.Id
+                } else {
+                    $Value = $List
+                }
+                $Hash = @{ value = $Value } | ConvertTo-Json
+                Invoke-RestMethod -Method Put -Uri "https://api.trello.com/1/cards/$CardId/idList/?token=$($Token.Token)&key=$($Token.AccessKey)" -Body $Hash -ContentType "application/json"
             }
             if($Archive) { 
                 $Hash = @{ value = $true } | ConvertTo-Json
-                Invoke-RestMethod -Method Put -Uri "https://api.trello.com/1/cards/$($Card.Id)/closed/?token=$($Token.Token)&key=$($Token.AccessKey)" -Body $Hash -ContentType "application/json"
+                Invoke-RestMethod -Method Put -Uri "https://api.trello.com/1/cards/$CardId/closed/?token=$($Token.Token)&key=$($Token.AccessKey)" -Body $Hash -ContentType "application/json"
             }
         }
         catch
