@@ -55,7 +55,7 @@
         }
         catch
         {
-            Write-Error
+            throw $_
         }
     }
     end

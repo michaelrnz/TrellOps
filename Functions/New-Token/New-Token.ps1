@@ -83,7 +83,7 @@
                 }
                 catch
                 {
-                    Write-Error $_
+                    throw $_
                 }
             }
             process
@@ -109,7 +109,7 @@
                 }
                 catch
                 {
-                    Write-Error $_
+                    throw $_
                 }
                 Write-Output $AccessToken
             }
@@ -120,7 +120,7 @@
                 }
                 catch
                 {
-                    Write-Error $_
+                    throw $_
                 }
             }
         }
@@ -137,7 +137,7 @@
         }
         catch
         {
-            Write-Error $_
+            throw $_
         }
         Write-Output $Output
     }

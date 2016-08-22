@@ -96,7 +96,7 @@
         }
         catch
         {
-            Write-Error $_
+            throw $_
         }
     }
     end
