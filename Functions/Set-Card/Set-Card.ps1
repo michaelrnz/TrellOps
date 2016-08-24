@@ -36,6 +36,12 @@
             Mandatory=$false,
             Position=5
         )]
+        [ValidateSet('Top','Bottom')]
+        $Position,
+        [parameter(
+            Mandatory=$false,
+            Position=6
+        )]
         [switch]$Archive
     )
     begin
@@ -72,6 +78,12 @@
                 }
                 $Hash = @{ value = $Value } | ConvertTo-Json
                 Invoke-RestMethod -Method Put -Uri "https://api.trello.com/1/cards/$CardId/idList/?token=$($Token.Token)&key=$($Token.AccessKey)" -Body $Hash -ContentType "application/json"
+            }
+
+            # If the Position parameter was filled in then PUT the new value
+            if($Position) { 
+                $Hash = @{ value = $($Position.ToLower()) } | ConvertTo-Json
+                Invoke-RestMethod -Method Put -Uri "https://api.trello.com/1/cards/$CardId/pos/?token=$($Token.Token)&key=$($Token.AccessKey)" -Body $Hash -ContentType "application/json"
             }
 
             # If the Archive parameter was selected then PUT the true statement
